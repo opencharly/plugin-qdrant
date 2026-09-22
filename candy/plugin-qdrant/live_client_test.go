@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"os/exec"
+	"strings"
 	"testing"
 	"time"
 )
@@ -196,5 +197,21 @@ func TestLiveCapabilities(t *testing.T) {
 	}
 	if _, err := eng.deleteCollection(ctx, coll); err != nil {
 		t.Fatalf("deleteCollection: %v", err)
+	}
+
+	// telemetry + metrics — the REST leg the Go client does not cover.
+	if tel, err := eng.telemetry(ctx); err != nil {
+		t.Fatalf("telemetry: %v", err)
+	} else if len(tel) == 0 {
+		t.Fatalf("empty telemetry")
+	} else {
+		t.Logf("telemetry: %d bytes", len(tel))
+	}
+	if met, err := eng.metrics(ctx); err != nil {
+		t.Fatalf("metrics: %v", err)
+	} else if !strings.Contains(met, "qdrant") && len(met) == 0 {
+		t.Fatalf("unexpected metrics output")
+	} else {
+		t.Logf("metrics: %d bytes", len(met))
 	}
 }
