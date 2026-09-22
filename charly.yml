@@ -1,0 +1,5 @@
+version: 2026.249.2125
+# Makes this plugin repo a PROJECT so its own candy is gated (charly#459).
+discover:
+    - path: candy
+      recursive: true

@@ -2,3 +2,5 @@
 /.check/
 /.containerignore
 /.dockerignore
+# stray qdrant state from local live tests
+.qdrant-initialized
