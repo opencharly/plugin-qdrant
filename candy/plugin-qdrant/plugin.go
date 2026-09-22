@@ -6,9 +6,11 @@
 // pass-through `{"args":[...]}` and kong-parse them into the QdrantCmd tree
 // (sdk.RunInProcCLI), so the handler runs in charly's OWN process with native
 // stdio/TTY. The CLI talks to the server over the official Go gRPC client
-// (github.com/qdrant/go-client, port 6334) and the REST API (port 6333) for
-// health/version/snapshots; endpoint resolution is deliberately lightweight:
-// --host flag > QDRANT_HOST env > http://127.0.0.1:6333 (REST) / :6334 (gRPC).
+// (github.com/qdrant/go-client, port 6334) for collections/points/snapshots/
+// health/version, and over the REST API (port 6333) for telemetry/metrics only
+// (the two endpoints the client does not expose); endpoint resolution is
+// deliberately lightweight: --host flag > QDRANT_HOST env >
+// http://127.0.0.1:6333 (REST) / :6334 (gRPC).
 // The verb provider dispatches via Invoke with the full #Op as params_json: it is
 // HOST-BASED (the herdr pattern) — it resolves the in-venue REST/gRPC ports over
 // the reverse channel (cc.ResolveEndpoint) and drives the SAME official Go client,
