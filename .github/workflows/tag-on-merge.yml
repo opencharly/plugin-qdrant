@@ -1,8 +1,9 @@
 # ORG-WIDE TAG-ON-MERGE DISPATCHER — installed in every opencharly repo.
 name: tag-on-merge
 
-# Event-driven — no cron (RCA of all previous trigger designs, measured in
-# this repo across 8 merges and 17 schedule runs):
+# Event-driven — no cron (RCA of all previous trigger designs, measured in the
+# SOURCE repo (opencharly/.github) across 8 merges and 17 schedule runs; the
+# PR numbers below are that repo's, carried verbatim into every consumer):
 #
 # 1. `on: push` / `on: pull_request: [closed]` CANNOT see auto-merge merges.
 #    Native-auto-merge squash merges (actor `app/github-actions`) fire their
