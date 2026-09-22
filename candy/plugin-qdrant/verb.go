@@ -9,7 +9,6 @@ import (
 	params "github.com/opencharly/plugin-qdrant/candy/plugin-qdrant/params"
 	"github.com/opencharly/sdk"
 	"github.com/opencharly/sdk/kit"
-	"github.com/opencharly/spec/spec"
 )
 
 // verb.go is the `qdrant:` check VERB — the declarative counterpart of the
@@ -86,10 +85,9 @@ func validateMethod(method string, in params.QdrantInput) error {
 	return nil
 }
 
-// runVerbQdrant resolves the venue endpoint, builds a client engine, and
-// dispatches the method. resolveAddr is injected so the tests point the verb at
-// a fake server without the reverse channel.
-func runVerbQdrant(ctx context.Context, cc kit.CheckContext, op *spec.Op, in params.QdrantInput) (string, error) {
+// runVerbQdrant resolves the venue REST/gRPC endpoints over the reverse channel,
+// builds a client engine against them, and dispatches the method.
+func runVerbQdrant(ctx context.Context, cc kit.CheckContext, in params.QdrantInput) (string, error) {
 	restAddr, err := cc.ResolveEndpoint(ctx, inVenueRestPort)
 	if err != nil {
 		return "", fmt.Errorf("resolve qdrant REST endpoint: %w", err)

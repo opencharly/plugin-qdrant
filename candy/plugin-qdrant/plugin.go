@@ -1,6 +1,6 @@
 // Package qdrant is the importable form of the charly `qdrant` plugin: a
 // `command:qdrant` CLI for a deployed Qdrant vector-search server PLUS the
-// `qdrant:` check VERB (the declarative in-box probe counterpart, verb.go).
+// `qdrant:` check VERB (the declarative counterpart, verb.go).
 //
 // A command provider dispatches via the pb Invoke(OpRun) envelope — decode the
 // pass-through `{"args":[...]}` and kong-parse them into the QdrantCmd tree
@@ -9,9 +9,11 @@
 // (github.com/qdrant/go-client, port 6334) and the REST API (port 6333) for
 // health/version/snapshots; endpoint resolution is deliberately lightweight:
 // --host flag > QDRANT_HOST env > http://127.0.0.1:6333 (REST) / :6334 (gRPC).
-// The verb provider dispatches via Invoke with the full #Op as params_json (the
-// dsh pattern): it probes the loopback-bound REST API INSIDE the venue via
-// cc.Exec() — the direct in-box check, working under both box and live modes.
+// The verb provider dispatches via Invoke with the full #Op as params_json: it is
+// HOST-BASED (the herdr pattern) — it resolves the in-venue REST/gRPC ports over
+// the reverse channel (cc.ResolveEndpoint) and drives the SAME official Go client,
+// reading the admin key host-side from the credential store (verb:credential).
+// Every verb method needs a running server, so all skip under `charly check box`.
 //
 // Usable OUT-OF-PROCESS by the cmd/serve shim (the default placement) OR
 // COMPILED-IN (NewProvider()/NewMeta() via plugins_generated.go) — both
@@ -96,8 +98,8 @@ func (p *provider) Reserved() string { return "qdrant" }
 // RunVerb implements spec.CheckVerbProvider — the COMPILED-IN verb dispatch. The
 // host recognizes a compiled-in pb.ProviderServer that ALSO implements this typed
 // contract (hostVerbResolver.RunVerb) and threads the live host CheckContext in
-// (hostCheckContext) — the executor-bearing surface the in-box verb needs (Exec +
-// Mode). The out-of-process placement runs the SAME core via invokeVerb (the pb
+// (hostCheckContext) — the executor-bearing surface the host-based verb needs
+// (ResolveEndpoint + Mode). The out-of-process placement runs the SAME core via invokeVerb (the pb
 // Invoke envelope with the broker attached) — placement-invisible, F8.
 func (p *provider) RunVerb(ctx context.Context, cc spec.CheckContext, op *spec.Op) spec.CheckVerbResult {
 	var in params.QdrantInput
@@ -113,7 +115,7 @@ func (p *provider) RunVerb(ctx context.Context, cc spec.CheckContext, op *spec.O
 	if requiresLive(method) && cc.Mode() == spec.CheckModeBox {
 		return spec.CheckVerbResult{Status: spec.StatusSkip, Message: fmt.Sprintf("qdrant: %s requires a running server (skip under charly check box)", method)}
 	}
-	out, runErr := runVerbQdrant(ctx, cc, op, in)
+	out, runErr := runVerbQdrant(ctx, cc, in)
 	return verbVerdict(method, out, runErr, op)
 }
 
@@ -163,8 +165,8 @@ func invokeCommand(req *pb.InvokeRequest) (*pb.InvokeReply, error) {
 
 // qdrantEnv is the plugin-side decode of the CheckEnv the host ships as
 // Operation.Env for a `qdrant:` check step — only Mode matters here (the verb
-// probes the loopback-bound REST API in-box; deploy-context methods skip under
-// box mode).
+// resolves the venue endpoints host-side and drives a running server; every
+// method skips under box mode).
 type qdrantEnv struct {
 	Box  string `json:"box"`
 	Mode string `json:"mode"` // "live" | "box"
@@ -195,7 +197,7 @@ func invokeVerb(ctx context.Context, req *pb.InvokeRequest) (*pb.InvokeReply, er
 	if err != nil {
 		return sdk.ResultJSON("fail", fmt.Sprintf("qdrant: %s: %v", method, err))
 	}
-	out, runErr := runVerbQdrant(ctx, cc, &op, in)
+	out, runErr := runVerbQdrant(ctx, cc, in)
 	return sdk.VerbVerdict("qdrant", method, out, runErr, &op, false)
 }
 

@@ -40,6 +40,7 @@
 	// collection — the target collection for the collection/points/snapshot methods.
 	collection?: string
 	// size — the vector dimension for collection-create.
+	// (gengotypes maps CUE uint64 -> Go int64; see params/cue_types_gen.go.)
 	size?: uint64
 	// distance — the distance metric for collection-create (default cosine).
 	distance?: ("cosine" | "euclid" | "dot" | "manhattan") @go(Distance,type=string)
