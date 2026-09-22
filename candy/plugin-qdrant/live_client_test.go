@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -42,8 +43,8 @@ func startLiveQdrant(t *testing.T) (endpoint, func()) {
 	cmd := exec.Command(bin)
 	cmd.Env = append(os.Environ(),
 		"QDRANT__SERVICE__API_KEY="+apiKey,
-		"QDRANT__SERVICE__HTTP_PORT="+itoa(restPort),
-		"QDRANT__SERVICE__GRPC_PORT="+itoa(grpcPort),
+		"QDRANT__SERVICE__HTTP_PORT="+strconv.Itoa(restPort),
+		"QDRANT__SERVICE__GRPC_PORT="+strconv.Itoa(grpcPort),
 		"QDRANT__STORAGE__STORAGE_PATH="+dir+"/storage",
 		"QDRANT__STORAGE__SNAPSHOTS_PATH="+dir+"/snapshots",
 		"QDRANT__TELEMETRY_DISABLED=true",
@@ -52,7 +53,7 @@ func startLiveQdrant(t *testing.T) (endpoint, func()) {
 		t.Skipf("live qdrant integration: cannot start %s: %v", bin, err)
 	}
 	ep := endpoint{
-		restBase: "http://127.0.0.1:" + itoa(restPort),
+		restBase: "http://127.0.0.1:" + strconv.Itoa(restPort),
 		grpcHost: "127.0.0.1",
 		grpcPort: grpcPort,
 		apiKey:   apiKey,
@@ -80,28 +81,6 @@ func startLiveQdrant(t *testing.T) (endpoint, func()) {
 		}
 		time.Sleep(500 * time.Millisecond)
 	}
-}
-
-func itoa(n int) string {
-	if n == 0 {
-		return "0"
-	}
-	neg := n < 0
-	if neg {
-		n = -n
-	}
-	var b [20]byte
-	i := len(b)
-	for n > 0 {
-		i--
-		b[i] = byte('0' + n%10)
-		n /= 10
-	}
-	if neg {
-		i--
-		b[i] = '-'
-	}
-	return string(b[i:])
 }
 
 // TestLiveCapabilities drives the full capability surface against a real server.

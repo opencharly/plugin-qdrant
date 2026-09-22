@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -22,21 +23,7 @@ func newTestEngine(t *testing.T, srv *httptest.Server, apiKey string) *engine {
 	t.Helper()
 	host := strings.TrimPrefix(srv.URL, "http://")
 	host, port := splitHostPort(host, 80)
-	return &engine{ep: endpoint{restBase: "http://" + host + ":" + itoaTest(port), grpcHost: host, grpcPort: 6334, apiKey: apiKey}}
-}
-
-func itoaTest(n int) string {
-	if n == 0 {
-		return "0"
-	}
-	var b [12]byte
-	i := len(b)
-	for n > 0 {
-		i--
-		b[i] = byte('0' + n%10)
-		n /= 10
-	}
-	return string(b[i:])
+	return &engine{ep: endpoint{restBase: "http://" + host + ":" + strconv.Itoa(port), grpcHost: host, grpcPort: 6334, apiKey: apiKey}}
 }
 
 func TestRestGetAuthAndError(t *testing.T) {

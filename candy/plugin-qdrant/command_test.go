@@ -159,14 +159,6 @@ func TestValidateMethod(t *testing.T) {
 	}
 }
 
-func TestRequiresLive(t *testing.T) {
-	for _, m := range []string{"health", "version", "collection-create", "points-upsert"} {
-		if !requiresLive(m) {
-			t.Errorf("requiresLive(%q) = false, want true", m)
-		}
-	}
-}
-
 func TestPointAndValueString(t *testing.T) {
 	if got := pointIDString(qdrant.NewIDNum(42)); got != "42" {
 		t.Errorf("pointIDString(num) = %q", got)

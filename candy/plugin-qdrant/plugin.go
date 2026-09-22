@@ -110,11 +110,11 @@ func (p *provider) RunVerb(ctx context.Context, cc spec.CheckContext, op *spec.O
 	if err := validateMethod(method, in); err != nil {
 		return spec.CheckVerbResult{Status: spec.StatusFail, Message: err.Error()}
 	}
-	// The qdrant verb drives a RUNNING server over the host-resolved endpoint, so
-	// every method skips under `charly check box` (a disposable `podman run --rm`
-	// has no server). The deterministic in-image claims are the candy's own build
-	// checks.
-	if requiresLive(method) && cc.Mode() == spec.CheckModeBox {
+	// Every qdrant method drives a RUNNING server over the host-resolved
+	// endpoint, so all skip under `charly check box` (a disposable
+	// `podman run --rm` has no server). The deterministic in-image claims are the
+	// candy's own build checks.
+	if cc.Mode() == spec.CheckModeBox {
 		return spec.CheckVerbResult{Status: spec.StatusSkip, Message: fmt.Sprintf("qdrant: %s requires a running server (skip under charly check box)", method)}
 	}
 	out, runErr := runVerbQdrant(ctx, cc, in)
@@ -192,7 +192,7 @@ func invokeVerb(ctx context.Context, req *pb.InvokeRequest) (*pb.InvokeReply, er
 	if err := validateMethod(method, in); err != nil {
 		return sdk.ResultJSON("fail", err.Error())
 	}
-	if requiresLive(method) && env.Mode == "box" {
+	if env.Mode == "box" {
 		return sdk.ResultJSON("skip", fmt.Sprintf("qdrant: %s requires a running server (skip under charly check box)", method))
 	}
 	cc, err := sdk.NewCheckContext(req.GetExecutorBrokerId(), req.GetEnvJson())

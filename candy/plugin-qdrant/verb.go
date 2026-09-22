@@ -42,12 +42,6 @@ const (
 	secretKey     = "qdrant"
 )
 
-// requiresLive reports whether a method needs a RUNNING server (and so must skip
-// under `charly check box`). health/version/auth-required all need the live
-// server; every method here does (a disposable image has no server). The
-// deterministic in-image claims are covered by the candy's own build checks.
-func requiresLive(method string) bool { return true }
-
 // validateMethod checks method-exclusive modifiers before dispatch.
 func validateMethod(method string, in params.QdrantInput) error {
 	switch method {
