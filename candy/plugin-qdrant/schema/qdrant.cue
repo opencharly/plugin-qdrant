@@ -30,7 +30,6 @@
 
 // #QdrantInput is the `qdrant` verb's plugin_input: the method name plus its
 // method-exclusive modifiers.
-package qdrant
 
 #QdrantInput: {
 	// method — the qdrant verb method name (the verb's PRIMARY input field, so
