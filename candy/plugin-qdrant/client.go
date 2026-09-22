@@ -173,11 +173,8 @@ func (e *engine) createCollection(ctx context.Context, name string, size uint64,
 	if err != nil {
 		return "", err
 	}
-	if _, err := c.CollectionExists(ctx, name); err == nil {
-		exists, _ := c.CollectionExists(ctx, name)
-		if exists {
-			return fmt.Sprintf("collection %s already exists", name), nil
-		}
+	if exists, err := c.CollectionExists(ctx, name); err == nil && exists {
+		return fmt.Sprintf("collection %s already exists", name), nil
 	}
 	if err := c.CreateCollection(ctx, &qc.CreateCollection{
 		CollectionName: name,
@@ -399,10 +396,12 @@ func (e *engine) deleteNewestSnapshot(ctx context.Context, collection string) (s
 // diagnostics (REST — the Go client does not expose telemetry/metrics)
 // ---------------------------------------------------------------------------
 
-// telemetry / metrics are CLI-only diagnostics: the Go client has no binding, so
-// they use the REST API through the host-vantage HTTP leg is not available here;
-// these methods are therefore dispatched only by the CLI (which has cc.HTTPDo
-// unavailable too) — see command.go's httpFallback. Kept out of the verb schema.
+// telemetry / metrics are CLI-only diagnostics: the Go client has no binding for
+// either endpoint, so they use the small REST leg (restGet, config.go) against
+// the resolved REST base. They are dispatched only by the CLI
+// (command.go's TelemetryCmd / MetricsCmd) and are deliberately kept OUT of the
+// verb schema (schema/qdrant.cue) — the bed's acceptance surface is the
+// Go-client-backed management methods.
 
 // ---------------------------------------------------------------------------
 // helpers

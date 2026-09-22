@@ -18,11 +18,13 @@
 // (verb:credential).
 //
 // The method surface below is the FULL management/testing capability: health,
-// version, the auth boundary, collections (CRUD + exists + aliases), points
-// (upsert/query/scroll/count/get/delete/set-payload), and snapshots. That lets a
-// candy/box `check:` plan fully configure and exercise a Qdrant instance from
-// charly.yml alone. `charly check box` (no running server) skips the
-// live-requiring methods; the deterministic in-image methods still run.
+// version, the auth boundary, collections (create/info/exists/delete + list),
+// points (upsert/query/scroll/count/get/delete), and snapshots
+// (list/create/delete). That lets a candy/box `check:` plan fully configure and
+// exercise a Qdrant instance from charly.yml alone. Every method drives a
+// RUNNING server, so all of them SKIP under `charly check box` (a disposable
+// `podman run --rm` has no server) — the deterministic in-image claims are the
+// candy's own build-scope checks, not this verb.
 //
 // SELF-CONTAINED: it references NO base def, so it compiles standalone (the SDK's
 // serve-side check + gengotypes) AND splices onto the base (base ++ plugin is a
