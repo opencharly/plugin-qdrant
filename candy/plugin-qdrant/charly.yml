@@ -1,6 +1,5 @@
 plugin-qdrant:
     candy:
-        version: 2026.249.2125
         description: |-
             The `charly qdrant` CLI for a deployed Qdrant vector-search server PLUS
             the declarative `qdrant:` check verb — an out-of-tree EXTERNAL plugin
