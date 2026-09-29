@@ -3,11 +3,13 @@
 Standalone plugin repo for the Qdrant `command:qdrant` CLI and the `qdrant:`
 check verb. The plugin is a Go module at `candy/plugin-qdrant/` (module path
 `github.com/opencharly/plugin-qdrant/candy/plugin-qdrant`); the root `charly.yml`
-declares `discover: candy` **and** the `qdrant-cli-skill` `skill:` entity (the
-corpus source for `/charly-qdrant:qdrant-cli`).
+declares `discover: candy` so the repo is a project, and the candy manifest
+carries the `qdrant-cli-skill` `skill:` entity (the corpus source for
+`/charly-qdrant:qdrant-cli`).
 
 Canonical files:
 
+- `charly.yml` — the root project manifest (`discover: candy` only).
 - `candy/plugin-qdrant/charly.yml` — the `plugin-qdrant:` candy entity
   (`plugin:` block, `plan:` check) + the `qdrant-cli-skill` skill entity.
 - `candy/plugin-qdrant/client.go` — the official Go-client backend.

@@ -87,8 +87,9 @@ QDRANT_TEST_BINARY=/path/to/qdrant go test ./...
   backend), `command.go` (the CLI), `verb.go` (the `qdrant:` verb),
   `config.go` (endpoint resolution), `schema/qdrant.cue`,
   `params/cue_types_gen.go`, `cmd/serve/main.go`.
-- `charly.yml` — the root project manifest (`discover: candy` + the
-  `qdrant-cli-skill` skill entity).
+- `charly.yml` — the root project manifest (`discover: candy` only); the
+  `qdrant-cli-skill` `skill:` entity lives in the candy manifest
+  `candy/plugin-qdrant/charly.yml`.
 - `.github/workflows/ci.yml` + `.github/workflows/tag-on-merge.yml` — the Go
   gates and the CalVer tag + `CHANGELOG/` on merge.
 
