@@ -141,5 +141,8 @@ qdrant-cli-skill:
             ## Cross-References
 
             - `/charly-qdrant:qdrant` — the qdrant service candy (layer-qdrant).
-            - `/charly-qdrant:qdrant-box` — the qdrant box + check-qdrant-pod bed (pod-qdrant).
+            - the qdrant box + `check-qdrant-pod` R10 bed (the `pod-qdrant` repo). Named as a
+              REPO, not a `/charly-<family>:<skill>` ref: `pod-qdrant` owns no `skill:` entity,
+              so such a ref would not resolve (and an unresolvable ref is a hard error in the
+              docs build).
             - `/charly-internals:plugin` — external command/verb plugins, the provider model.
