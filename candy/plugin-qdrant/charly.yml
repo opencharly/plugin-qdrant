@@ -52,12 +52,5 @@ qdrant-cli-skill:
         name: qdrant-cli
         family: qdrant
         owner: plugin-qdrant
-        description: |-
-            The `charly qdrant` management CLI for a deployed Qdrant
-            vector-search server PLUS the declarative `qdrant:` check verb
-            (command:qdrant + verb:qdrant plugin, plugin-qdrant). MUST be invoked
-            before managing collections, points, or snapshots on a running Qdrant
-            deployment from the host, or before authoring/verifying a qdrant check
-            bed.
         triggers:
             - "`charly qdrant` CLI (collections / points / snapshots / health / version) / the `qdrant:` check verb / the check-qdrant-pod bed / the qdrant box"
